@@ -1,14 +1,14 @@
 //! AnyStr abstract
 //!
 //! This allows us accept a wide variety of string by wrapping upon
-//! the trait AsRef<str> into AnyStr trait along with some utilities
+//! the trait [AsRef<str>] into [AnyStr] trait along with some utilities
 
-/// AnyStr allows us to pass in &str, String, &String
-/// and can convert to String using any_str_to_string func below
+/// AnyStr allows us to pass in &[str], [String], &[String]
+/// and can convert to [String] using [any_str_to_string] func
 pub trait AnyStr: AsRef<str> {}
 impl<T> AnyStr for T where T: AsRef<str> {}
 
-/// Turns AnyStr into String
+/// Turns AnyStr into [String]
 /// 
 /// # Examples
 /// 
@@ -35,7 +35,7 @@ pub fn any_str_to_string<_AnyStr: AnyStr>(s: _AnyStr) -> String {
     s.as_ref().to_string()
 }
 
-/// A shortcut to create a None that is compatible with Option<_AnyStr:AnyStr>
+/// A shortcut to create a None that is compatible with [Option<_AnyStr:AnyStr>]
 /// 
 /// # Examples
 /// 

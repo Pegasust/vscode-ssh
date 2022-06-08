@@ -1,4 +1,8 @@
-
+//! Implementation of VSCodeSSH command
+//! This provides the abstraction over the creation of
+//! `code [flags] <target>` command by providing
+//! [VSCodeSSH] with numerous constructors
+//! and implementing [Command] for [VSCodeSSH]
 
 use std::process;
 use crate::command::Command;

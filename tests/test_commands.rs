@@ -1,5 +1,5 @@
 
-use vscode_ssh::{CommandEnum::{*, self}, VSCodeSSH, command::Command};
+use vscode_ssh::{CommandEnum::{self}, VSCodeSSH, command::Command};
 
 fn ssh_local() -> VSCodeSSH {
     VSCodeSSH::from_ip("localhost")

@@ -32,19 +32,16 @@ impl CommandOutput {
         }
     }
     pub fn is_limbo(&self) -> bool {
-        match self {
-            Self::Limbo => true,
-            _ => false,
-        }
+        matches!(self, Self::Limbo)
     }
 }
 
-impl Into<Result<String, String>> for CommandOutput {
-    fn into(self) -> Result<String, String> {
-        let stablized = self.stabilize();
+impl From<CommandOutput> for Result<String, String> {
+    fn from(val: CommandOutput) -> Self {
+        let stablized = val.stabilize();
         match stablized {
             CommandOutput::String(a) => a,
-            bad @ _ => Err(format!("Unable to transform: {}", match bad {
+            bad => Err(format!("Unable to transform: {}", match bad {
                 CommandOutput::Limbo => "Is Limbo",
                 _ => "Unknown",
             }))

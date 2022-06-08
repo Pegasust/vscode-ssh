@@ -1,6 +1,6 @@
 pub mod command;
 use command::*;
-use std::process;
+use std::process::{self, Stdio};
 use enum_dispatch::enum_dispatch;
 
 /// Contains all the command impl
@@ -28,7 +28,7 @@ const fn anystr_none() -> Option<String> {
     None
 }
 
-const fn anystr_some<_AnyStr: AnyStr>(s: _AnyStr) -> Option<_AnyStr> {
+fn anystr_some<_AnyStr: AnyStr>(s: _AnyStr) -> Option<_AnyStr> {
     Some(s)
 }
 
@@ -37,7 +37,7 @@ impl VSCodeSSH {
     /// vscode-remote://ssh-remote+felius.ddns.net/home/ubuntu_admin/git_server/vscode-ssh
     pub fn get_uri(&self)->String {
         format!("vscode-remote://ssh-remote+{}{}{}",
-            match &self.host_user.clone().and_then(|s| if s.len() == 0 {None} else {Some(s)}) {
+            match &self.host_user.clone().and_then(|s| if s.is_empty() {None} else {Some(s)}) {
                 Some(user) => user.clone() + "@",
                 None => "".to_string()
             },
@@ -80,7 +80,7 @@ impl VSCodeSSH {
     {
         Self::new(host_ip, anystr_some(host_user), anystr_some(host_abspath), None)
     }
-    pub fn make_verbose(&mut self) -> &mut Self {
+    pub fn make_verbose(mut self) -> Self {
         self.verbose = true;
         self
     }
@@ -90,11 +90,13 @@ impl Command for VSCodeSSH {
     fn apply_proc(&self) -> process::Command {
         let mut retval = process::Command::new("code");
         if self.verbose {
-            retval.arg("-v");
+            retval.arg("--verbose");
         }
         retval
             .arg("--folder-uri")
-            .arg(self.get_uri());
+            .arg(self.get_uri())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped());
 
         retval
     }
@@ -167,15 +169,28 @@ mod test {
     fn vs_ssh_local_perf() {
         let output = ssh_local().perform();
         if let CommandOutput::ProcessOutput(res) = output {
-            assert!(res.unwrap().status.success());
+            assert!(res.unwrap().status.success())
         } else {
-            assert!(false)
+            panic!()
         };
     }
     #[test]
-    fn vs_ssh_local_perf_output() {
+    fn vs_ssh_local_perf_verbose_output() {
+        let cmd = ssh_local().make_verbose();
+        let proc = cmd.apply_proc();
+        println!("prog: {:?}; args {:?}", proc.get_program(), proc.get_args());
         println!("{}", 
-            Into::<Result<String,String>>::into(ssh_local().perform())
+            Into::<Result<String,String>>::into(cmd.perform())
             .unwrap_or_else(|err| err));
+    }
+    #[test]
+    fn vs_ssh_local_output() {
+        let cmd = ssh_local();
+        let proc = cmd.apply_proc();
+        println!("prog: {:?}; args {:?}", proc.get_program(), proc.get_args());
+        println!("{}", 
+            Into::<Result<String,String>>::into(cmd.perform())
+            .unwrap_or_else(|err| err));
+
     }
 }

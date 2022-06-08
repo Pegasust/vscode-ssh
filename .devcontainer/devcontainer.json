@@ -34,7 +34,9 @@
 		"tamasfe.even-better-toml",
 		"serayuzgur.crates",
 		"usernamehw.errorlens",
-		"wayou.vscode-todo-highlight"
+		"wayou.vscode-todo-highlight",
+		"eamodio.gitlens",
+		"rust-lang.rust-analyzer"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

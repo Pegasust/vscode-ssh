@@ -56,16 +56,22 @@ pub trait Command {
     /// if this command couldn't be undone, then returns a None
     fn undo_proc(&self)->Option<process::Command>;
 
+    /// Performs the command and returns a [CommandOutput]
+    /// The default implementation creates process using
+    /// [Command::apply_proc()] then executes it with output()
     fn perform(&self)->CommandOutput {
         CommandOutput::ProcessOutput(
-            self.apply_proc().spawn()
-                .and_then(|child| child.wait_with_output())
+            self.apply_proc().output()
         )
     }
+    /// Optionally performs the undo of the executed command.
+    /// The default implementation creates & queries if undo is possible
+    /// by testing `self.undo_proc().is_some()` and executes the
+    /// created process with output()
     fn drawback(&self)->Option<CommandOutput> {
         self.undo_proc()
             .map(|mut cmd| CommandOutput::ProcessOutput(
-                cmd.spawn().and_then(|child| child.wait_with_output())
+                cmd.output()
             ))
     }
 }

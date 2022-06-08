@@ -1,22 +1,29 @@
-
+//! Command module
+//! Adds some interfaces regarding defining a command
+//! 
+//! Provides:
+//!  - [CommandOutput]: The output of a command execution
+//!  - [Command]: Trait of an executable command
 use std::{process::{self}};
 
 use enum_dispatch::enum_dispatch;
 
+/// Represents all of the output types possible for a command execution
+/// 
 #[derive(Debug)]
 pub enum CommandOutput {
-    // Command that produces nothing
+    /// Command that produces nothing
     Void(Result<(), String>),
-    // Command that produces a string
+    /// Command that produces a string
     String(Result<String, String>),
-    // Command that produces seemingly stdout and stderr
+    /// Command that produces seemingly stdout and stderr
     ProcessOutput(Result<std::process::Output, std::io::Error>),
-    // The state where the command output is unable to stablize into String
+    /// The state where the command output is unable to stablize into String
     Limbo
 }
 impl CommandOutput {
-    /// Attempts to stablize the output into Self::String.
-    /// If unable to stablize, returns Self::Limbo
+    /// Attempts to stablize the output into [CommandOutput::String].
+    /// If unable to stablize, returns [CommandOutput::Limbo]
     pub fn stabilize(self) -> CommandOutput {
         match self {
             a @ CommandOutput::String(_) => a,
@@ -31,6 +38,7 @@ impl CommandOutput {
             _ => CommandOutput::Limbo
         }
     }
+    /// Quick check if the command output is [`CommandOutput::Limbo`]
     pub fn is_limbo(&self) -> bool {
         matches!(self, Self::Limbo)
     }
@@ -48,6 +56,7 @@ impl From<CommandOutput> for Result<String, String> {
         }
     }
 }
+/// Interface for an executable command
 #[enum_dispatch]
 pub trait Command {
     /// Creates the process to carry out this particular command

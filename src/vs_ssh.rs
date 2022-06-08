@@ -15,6 +15,7 @@ use super::anystr::*;
 /// `vscode-remote://ssh-remote+{user}@{host_uri}/{path}`
 /// with user being optional (remove `@` if not used)
 /// and the path being optional (remove any `/` if not used)
+#[derive(Debug, Clone)]
 pub struct VSCodeSSH {
     host_ip: String,
     host_user: Option<String>,
@@ -92,9 +93,6 @@ impl Command for VSCodeSSH {
         retval
             .arg("--folder-uri")
             .arg(self.get_uri())
-            // .stdout(Stdio::piped())
-            // .stderr(Stdio::piped())
-            // .stdin(Stdio::piped())
         ;
 
         retval

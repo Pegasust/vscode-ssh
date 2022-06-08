@@ -1,5 +1,5 @@
 [package]
-name = "vscode-ssh"
+name = "vscode_ssh"
 version = "0.1.0"
 edition = "2021"
 

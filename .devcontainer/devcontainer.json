@@ -32,7 +32,9 @@
 		"mutantdino.resourcemonitor",
 		"matklad.rust-analyzer",
 		"tamasfe.even-better-toml",
-		"serayuzgur.crates"
+		"serayuzgur.crates",
+		"usernamehw.errorlens",
+		"wayou.vscode-todo-highlight"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

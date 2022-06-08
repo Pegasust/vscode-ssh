@@ -49,23 +49,34 @@ enum CommandEnum {
 }
 
 pub enum CommandOutput {
+    // Command that produces nothing
     Void(Result<(), String>),
+    // Command that produces a string
     String(Result<String, String>),
-    ProcessOutput(Result<std::process::Output, std::io::Error>)
+    // Command that produces seemingly stdout and stderr
+    ProcessOutput(Result<std::process::Output, std::io::Error>),
+    // The state where the command output is unable to stablize into String
+    Limbo
 }
 impl CommandOutput {
+    /// Attempts to stablize the output into Self::String.
+    /// If unable to stablize, returns Self::Limbo
     pub fn stabilize(self) -> CommandOutput {
         match self {
             a @ CommandOutput::String(_) => a,
             CommandOutput::Void(a) => 
-                CommandOutput::String(a.and_then(|_| Ok("".to_string()))),
+                CommandOutput::String(a.map(|_| "".to_string())),
             CommandOutput::ProcessOutput(_) => todo!(),
+            a @ CommandOutput::Limbo => a,
         }
     }
 }
 #[enum_dispatch]
 pub trait Command {
+    /// Creates the process to carry out this particular command
     fn apply_proc(&self)->process::Command;
+    /// Creates the process to undo the command
+    /// if this command couldn't be undone, then returns a None
     fn undo_proc(&self)->Option<process::Command>;
 
     fn perform(&self)->CommandOutput {
@@ -87,7 +98,7 @@ impl Command for VSCodeSSH {
     }
 
     fn undo_proc(&self) -> Option<process::Command> {
-        Option::None
+        Option::None // operation not supported
     }
 }
 

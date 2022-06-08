@@ -23,3 +23,8 @@ fn vs_ssh_cannot_undo() {
 fn vs_ssh_perform_end_well() {
     assert!(!ssh_felius().perform().stabilize().is_limbo())
 }
+
+#[test]
+fn ssh_local_end_well() {
+    assert!(!ssh_local().perform().stabilize().is_limbo())
+}

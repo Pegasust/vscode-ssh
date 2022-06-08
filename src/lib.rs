@@ -89,7 +89,12 @@ impl VSCodeSSH {
 impl Command for VSCodeSSH {
     fn apply_proc(&self) -> process::Command {
         let mut retval = process::Command::new("code");
-        retval.arg(self.get_uri());
+        if self.verbose {
+            retval.arg("-v");
+        }
+        retval
+            .arg("--folder-uri")
+            .arg(self.get_uri());
 
         retval
     }
@@ -102,6 +107,8 @@ impl Command for VSCodeSSH {
 
 #[cfg(test)]
 mod test {
+    use std::ffi::OsStr;
+
     use super::*;
     #[test]
     fn uri_test_c_nil_nil() {
@@ -145,6 +152,15 @@ mod test {
 
     fn ssh_local() -> VSCodeSSH {
         VSCodeSSH::from_ip("localhost")
+    }
+
+    #[test]
+    fn ssh_creation_local() {
+        let cmd = ssh_local().apply_proc();
+        let matches: Vec<&str> = cmd.get_program().to_str().unwrap().matches("code").collect();
+        assert_eq!(matches, ["code"]);
+        let args: Vec<&OsStr> = cmd.get_args().collect();
+        assert_eq!(args, &["--folder-uri", "vscode-remote://ssh-remote+localhost"]);
     }
 
     #[test]

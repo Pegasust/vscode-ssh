@@ -32,7 +32,7 @@ $ code --remote=ssh-remote+user@remote path/
 ### Declarative workspace
 
 We also seek to provide a way to create a declarative workspace by specifying
-the host and their paths instead of doing it imperatively. 
+the host and their paths instead of doing it imperatively.
 
 #### Declarative settings
 
@@ -41,23 +41,21 @@ $ ls ~/.vscode-ssh-configs
 host_aliases.yml  repositories.yml
 
 $ vscode-ssh show-hosts
+# host_aliases.yml
 hosts:
-- remote_ip:
-  - 192.168.0.x
+- name: school_remote  # optional
+  addresses:           # must have at least one
+  - 192.168.0.3        # addresses are tried from first to last
   - some.public.address.com
   - 127.0.0.1
-  alias:
-    school_remote
-  env:
-  - X11_DISPLAY=...
-    ...
-- alias:
-    homelab
-  remote-ip:
-  - x.x.x.x
-  default_user: user01
+  env:                 # optional
+  - X11_DISPLAY=....
+  default_user: user01 # optional: prompt w/ default: `whoami` if not supplied
+- addresses: ["192.168.0.39"]  # if name not supplied, addresses will be used
+
 
 $ vscode-ssh show-repos
+# repositories.yml
 repositories:
 - name: vscode-ssh
   path: /home/user/workspaces/vscode-ssh
@@ -73,6 +71,17 @@ supported format so that you could launch it later on
 
 ```yaml
 # vscode-ssh-workspace.yml
+workspace:
+- name: vscode-ssh
+  repositories:
+  - name: vscode-ssh
+    path: /home/user/workspaces/cloned-vscode-ssh # override
+    user: i_am_another_user                       # override
+    env:
+    - RUST_BACKTRACE=1                            # append or override
+  host: hostname_or_address
+
+
 workspace:
 - repository: vscode-ssh
 - repository: vscode-ssh-dev

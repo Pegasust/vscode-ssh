@@ -6,7 +6,8 @@
 #![warn(missing_docs)]
 pub mod command;
 pub mod vs_ssh;
-pub mod anystr;
+pub mod common;
+pub mod proto;
 
 use command::{Command, CommandOutput};
 use std::process;

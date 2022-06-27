@@ -7,7 +7,7 @@
 use std::process;
 use crate::command::Command;
 
-use super::anystr::*;
+use super::common::anystr::*;
 
 /// Implementation for VSCodeSSH command
 /// This is created to ease creation of the `code <target>` command.

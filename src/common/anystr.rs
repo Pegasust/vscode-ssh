@@ -9,9 +9,9 @@ pub trait AnyStr: AsRef<str> {}
 impl<T> AnyStr for T where T: AsRef<str> {}
 
 /// Turns AnyStr into [String]
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// use vscode_ssh::anystr::*;
 /// fn ok(s: String) {}
@@ -36,9 +36,9 @@ pub fn any_str_to_string<_AnyStr: AnyStr>(s: _AnyStr) -> String {
 }
 
 /// A shortcut to create a None that is compatible with [Option<_AnyStr:AnyStr>]
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```compile_fail
 /// use vscode_ssh::anystr::*;
 /// fn option_anystr<S: AnyStr>(opt: Option<S>) {}
